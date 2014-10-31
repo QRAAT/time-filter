@@ -104,7 +104,7 @@ try:
 
   # Partition of good / bad points. 
   print "evaluate: loading test data ... "
-  points = qraat.csv.csv('test-data.csv')
+  points = qraat.csv.csv('partition.csv')
   good = {} 
   for p in points: 
     good[int(p.est_id)] = True if int(p.good) is 1 else False

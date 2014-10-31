@@ -5,7 +5,7 @@ import qraat
 dep_id = 105
 sites = [1, 2, 3, 4, 5, 8]
 
-fd = open('test-data.csv', 'w')
+fd = open('partition.csv', 'w')
 fd.write('dep_id,site_id,est_id,t,power,good\n')
 
 for site_id in sites:

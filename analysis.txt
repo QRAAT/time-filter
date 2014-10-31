@@ -1,0 +1,512 @@
+First, some definitions:
+
+PULSE_INTERVAL (estimated) - The time differential between subsequent (good)
+  transmitter pulses. 
+
+PULSE_VARIATION (estimated) - A measurement of how much the pulse interval 
+  varies.  
+ 
+SCORE_INTERVAL - Window over which the PULSE_INTERVAL is estimated. 
+
+SCORE_NEIGHBORHOOD - Window over which we count a pulse's corroboartors. Pulse
+  X is in pulse Y's neighborhood if their distance is less than 
+  SCORE_NEIGHBORHOOD / 2. This value must divide SCORE_INTERVAL. 
+  
+SCORE_ERROR - A pulse X is said to corroborate pulse Y if their distance is 
+  within +/- (SCORE_ERROR / 2) of a multiple of PULSE_INTERVAL.
+  
+SCORE_THRESHOLD - The (exclusive) minimum relative score of a good pulse. 
+  
+
+For a fixed SCORE_ERROR, we have observed that the scoring algorithm results in 
+a lot of false negatives when PULSE_VARIATION is high. Increasing the 
+SCORE_ERROR reduces the rate of false negatives, but tends to increase the 
+number of false positives. Thus, there may be a "best" trade-off of PULSE_ERROR 
+as a function of PULSE_VARIATION. 
+
+Various environmental factors affect the pulse interval. In particular, we 
+believe that the temperature of the transmitter affects the interval in two 
+ways. One, it appears to increase peridodically, probably on a daily basis. 
+The season may influence exactly how far much the pulse interval varies on a 
+daily basis. Two, the regularity (variation) of the pulse interval changes on 
+the same basis. 
+
+To explore this trade-off, we start with a set of segmented pulses (known good 
+and bad values) [3] and run the filter with various fixed values of PULSE_ERROR
+and PULSE_THRESHOLD. We then quantize the pulses by PULSE_VARIATION and count 
+the number of false positives and negatives for each of these windows. The 
+false positive rate (resp. false negative rate) is
+
+ pos_rate = (# false positives) / (# bad points).
+
+(resp. neg_rate = (# false negatives) / (# good points).) For a fixed
+SCORE_THRESHOLD, this yields two matrices whose columns correspond to different
+settings of PULSE_ERROR (e.g. 0, 0.005, 0.010, 0.015, ... 0.2) and rows to 
+PULSE_VARIATION quantizations (e.g. 0, 0.04, 0.08, ... 4). Let Mp be the 
+matrix containing false positive rates, and Mn contain false negative rates.
+
+For each PULSE_VARIATION quantization, we wish to find a PULSE_ERROR value
+that provides a reasonable trade-off between the false positives and false 
+negatives. To make this idea concrete, we (arbitrarily) choose a function of
+pos_rate and pos_score (call it f) and compute the score matrix
+
+  S = f(Mp, Mn)
+
+For each row in S, compute the index of the opttmial column. The corresponding
+PULSE_ERROR is the optimal trade-off w.r.t f. In particular now, suppose we 
+have a scalar "cost" of a false positve Cp and a "cost of a false negative Cn. 
+Then
+
+  S = abs(Cp*Mp - Cn*Mn)
+
+is our score matrix. For example, if Cp=10 and Cn=1, is analogous to saying
+"false positives are 10 times as bad as false negatives". Pick the minimum
+score as the optimal PULSE_ERROR. 
+
+
+This approach has yielded a clear trend in the optimal PULSE_ERROR w.r.t
+PULSE_VARIATION. It is possible to perform linear regression on the optimal
+tradeoff to give a general PULSE_ERROR as a function of of PULSE_VARIATION. 
+
+Deonte a trade-off policy as a tuple (Cp, Cn). We present the performance of
+the fitted curves to the optimal trade-off for various policies. Most of
+these are hyperbolic curves. However, when a good fit couldn't be found, a 
+polynomial of degree 6 was fitted instead. To see plotted examples, see 
+[1, 2]. 
+
+
+False positive rate (pos_rate)
+
+              (10,1)  (5,1)   (3,1)   (2,1)   (3,2)   (1,1)   (1,2)
+
+score    0.1  0.0384  0.0428  0.0478  0.0534  0.0528  0.0548  0.0592
+thresh  
+         0.2  0.0276  0.0348  0.0366  0.0405  0.0415  0.0452  0.0489
+
+         0.3  0.0240  0.0291
+
+
+False negative rate (neg_rate)
+
+              (10,1)  (5,1)   (3,1)   (2,1)   (3,2),  (1,1),  (1,2)
+
+score    0.1  0.2669  0.2678  0.1747  0.1362  0.1075  0.0776  0.0508
+thresh  
+         0.2  0.4146  0.2495  0.1994  0.1380  0.1264  0.0953  0.0576
+
+         0.3  0.4336  0.3057
+
+
+We minimize the false positive rate by increasing their cost. However, in the
+extreme case we end up eliminating nearly half of the good data. In fact, as 
+the costs become more similar, so do the rates. 
+
+I've opted for a trade-off policy that favors removing false positives without 
+losing more than 15% of the good data. For (2,1) and SCORE_THRESHOLD = 0.2, 
+we obtain the hyperbolic function
+
+  SCORE_ERROR = f(x) : (-0.6324 / (x + 7.7640)) + 0.1255
+
+(See [1] for illustration.) In order to evaluate the performance of this
+particular function, I compared the rates resulting the following alternative
+approaches. Let x be the PULSE_VARIATION. 
+
+  1. opt(x) = argmin(S[x,:]) - use the optimal trade-off directly. 
+
+  2. p(x) = np.poly1d([0.00025, -0.00308, 0.01313, -0.02164, 0.00583, 0.01996,
+     0.0408]) - A polynomial of degree 6 (over-fitting). 
+
+  3. 0.1255 - Fixed SCORE_ERROR, the limit of the hyperbolic function. 
+
+The results are as follows: 
+
+           pos_rate  false_neg
+  
+ f(x)      0.0405    0.1380
+ opt(x)    0.0414    0.1573
+ p(x)      0.0407    0.1550 
+ 0.1255    0.0466    0.0558
+
+
+One immediately notices the sharp decrease in the false negative rate (and
+only marginal increase in false positive rate) when a fixed PULSE_ERROR is 
+used. The data set contains 45,989 good and 10,650 bad points. I tend to
+believe this inbalance skews the resulting rates. If we had more bad data, I
+suspsect we'd have a higher false positive rate. 
+
+Therefore, I conclude that the the hyperbolic f(x) provices the best
+trade-off, conservatively anticipating that a fixed score error would result
+in high false positive incidence.  
+
+
+Footnotes
+  
+  [1] Plots of SCORE_ERROR = lambda(x) : (-0.6324 / (x + 7.7640)) + 0.1255 
+      with SCORE_THRESHOLD = 0.20, plus plots of generated scores. Find in the
+      directory 1/. 
+
+  [2] Plots of SCORE_ERROR = 0.1956 with SCORE_THRESHOLD = 0.20. In the
+      directory 2/. 
+
+  [3] The data set used to generate these results was a set of pulses for a
+      fixed transmitter of one day. Because it was fixed, it's signal power 
+      stays mostly constant for good pulses. This was used to partition the
+      noise from the signal for various sites. 
+
+
+
+--------------------------------------------------------------------------------
+
+The performance of best-fit curves of various trade off policies and score 
+thresholds. 
+
+Policy : Cp=1,Cn=2 -------------------------------------------------------------
+
+  Score error . . . . np.poly1d([-0.00042, 0.00479, -0.02087, 0.04558, -0.0529, 0.03625, 0.0412])
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 2336
+     Rate . . . . . . 0.0508
+
+  Bad points  . . . . 10650
+  False positives . . 631
+     Rate . . . . . . 0.0592
+
+
+ *Score error . . . . lambda(x) : (-0.0054 / (x + 0.0545)) + 0.1956
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 2650
+     Rate . . . . . . 0.0576
+
+  Bad points  . . . . 10650
+  False positives . . 521
+     Rate . . . . . . 0.0489
+
+
+
+Policy : Cp=1,Cn=1 -------------------------------------------------------------
+
+  Score error . . . . lambda(x) : (-0.1525 / (x + 5.6903)) + 0.0563
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 3568
+     Rate . . . . . . 0.0776
+
+  Bad points  . . . . 10650
+  False positives . . 584
+     Rate . . . . . . 0.0548
+
+
+  Score error . . . . np.poly1d([0.00047, -0.0049, 0.01564, -0.00576, -0.04566, 0.07071, 0.06276])
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 4381
+     Rate . . . . . . 0.0953
+
+  Bad points  . . . . 10650
+  False positives . . 481
+     Rate . . . . . . 0.0452
+
+
+Policy : Cp=3,Cn=2 -------------------------------------------------------------
+
+  Score error . . . . lambda(x) : (-0.0160 / (x + 1.4445)) + 0.0337
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 4945
+     Rate . . . . . . 0.1075
+
+  Bad points  . . . . 10650
+  False positives . . 562
+     Rate . . . . . . 0.0528
+
+
+  Score error . . . . np.poly1d([-0.00017, 0.00198, -0.00982, 0.02755, -0.04531, 0.04562, 0.0477])
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 5813
+     Rate . . . . . . 0.1264
+
+  Bad points  . . . . 10650
+  False positives . . 442
+     Rate . . . . . . 0.0415
+
+
+
+Poiicy : Cp=2,Cn=1 -------------------------------------------------------------
+
+  Score error . . . . lambda(x) : (-0.0019 / (x + 0.2561)) + 0.0258
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 6266
+     Rate . . . . . . 0.1362
+
+  Bad points  . . . . 10650
+  False positives . . 569
+     Rate . . . . . . 0.0534
+
+
+ *Score error . . . . lambda(x) : (-0.6324 / (x + 7.7640)) + 0.1255
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 6346
+     Rate . . . . . . 0.1380
+
+  Bad points  . . . . 10650
+  False positives . . 431
+     Rate . . . . . . 0.0405
+
+
+
+Policy : Cp=3,Cn=1 -------------------------------------------------------------
+
+  Score error . . . . np.poly1d([-0.00039, 0.00467, -0.02141, 0.04718, -0.05185, 0.02651, 0.01509])
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 8035
+     Rate . . . . . . 0.1747
+
+  Bad points  . . . . 10650
+  False positives . . 509
+     Rate . . . . . . 0.0478
+
+
+  Score error . . . . lambda(x) : (-0.0451 / (x + 1.7954)) + 0.0581
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 9168
+     Rate . . . . . . 0.1994
+
+  Bad points  . . . . 10650
+  False positives . . 390
+     Rate . . . . . . 0.0366
+
+
+
+Policy : Cp=5,Cn=1 -------------------------------------------------------------
+
+  Score error . . . . lambda(x) : (-0.0006 / (x + 0.0916)) + 0.0153
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 12318
+     Rate . . . . . . 0.2678
+
+  Bad points  . . . . 10650
+  False positives . . 456
+     Rate . . . . . . 0.0428
+
+
+  Score error . . . . lambda(x) : (-0.2024 / (x + 6.7923)) + 0.0575
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 11472
+     Rate . . . . . . 0.2495
+
+  Bad points  . . . . 10650
+  False positives . . 371
+     Rate . . . . . . 0.0348
+
+
+  Score error . . . . lambda(x) : (-0.2884 / (x + 2.3559)) + 0.1864
+  Score threshold . . 0.30
+
+  Good points . . . . 45989
+  False negatives . . 14060
+     Rate . . . . . . 0.3057
+
+  Bad points  . . . . 10650
+  False positives . . 310
+     Rate . . . . . . 0.0291
+
+
+
+Policy : Cp=10,Cn=1 ------------------------------------------------------------
+
+  Score error . . . . lambda(x) : 0.01
+  Score threshold . . 0.10
+
+  Good points . . . . 45989
+  False negatives . . 12275
+     Rate . . . . . . 0.2669
+
+  Bad points  . . . . 10650
+  False positives . . 409
+     Rate . . . . . . 0.0384
+
+
+  Score error . . . . lambda(x) : (-0.0072 / (x + 0.6637)) + 0.0272
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 19068
+     Rate . . . . . . 0.4146
+
+  Bad points  . . . . 10650
+  False positives . . 294
+     Rate . . . . . . 0.0276
+
+
+  Score error . . . . lambda(x) : (-4.3487 / (x + 19.4387)) + 0.2651
+  Score threshold . . 0.30
+
+  Good points . . . . 45989
+  False negatives . . 19941
+     Rate . . . . . . 0.4336
+
+  Bad points  . . . . 10650
+  False positives . . 256
+     Rate . . . . . . 0.0240
+
+
+
+
+--------------------------------------------------------------------------------
+
+The performance of some best-fit curves compared to the optimal trade-off and
+score error fixed to the limit of the curve. 
+
+
+Poiicy : Cp=2,Cn=1 -------------------------------------------------------------
+
+  Score error . . . . lambda(x) : opt(x)
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 7235
+     Rate . . . . . . 0.1573
+
+  Bad points  . . . . 10650
+  False positives . . 441
+     Rate . . . . . . 0.0414
+
+ 
+  Score error . . . . lambda(x) : (-0.6324 / (x + 7.7640)) + 0.1255          [1]
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 6346
+     Rate . . . . . . 0.1380
+
+  Bad points  . . . . 10650
+  False positives . . 431
+     Rate . . . . . . 0.0405
+
+  
+  Score error . . . . np.poly1d([0.00025, -0.00308, 0.01313, -0.02164, 0.00583, 0.01996, 0.0408])
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 7129
+     Rate . . . . . . 0.1550
+
+  Bad points  . . . . 10650
+  False positives . . 433
+     Rate . . . . . . 0.0407
+
+  
+  Score error . . . . lambda(x) : 0.1255
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 2567
+     Rate . . . . . . 0.0558
+
+  Bad points  . . . . 10650
+  False positives . . 496
+     Rate . . . . . . 0.0466
+
+
+
+Policy : Cp=1,Cn=2 -------------------------------------------------------------
+
+  Score error . . . . lambda(x) : opt(x)
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 2676
+     Rate . . . . . . 0.0582
+
+  Bad points  . . . . 10650
+  False positives . . 507
+     Rate . . . . . . 0.0476
+
+
+  Score error . . . . lambda(x) : (-0.0054 / (x + 0.0545)) + 0.1956
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 2650
+     Rate . . . . . . 0.0576
+
+  Bad points  . . . . 10650
+  False positives . . 521
+     Rate . . . . . . 0.0489
+
+
+  Score error . . . . np.poly1d([-0.00159, 0.02117, -0.11046, 0.28551, -0.3839, 0.25636, 0.12648])
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 2480
+     Rate . . . . . . 0.0539
+
+  Bad points  . . . . 10650
+  False positives . . 507
+     Rate . . . . . . 0.0476
+
+
+  Score error . . . . lambda(x) : 0.1956                                     [2]
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 2397
+     Rate . . . . . . 0.0521
+
+  Bad points  . . . . 10650
+  False positives . . 520
+     Rate . . . . . . 0.0488
+
+
+
+--------------------------------------------------------------------------------
+
+Sanity checking. 
+
+
+No policy ----------------------------------------------------------------------
+  
+  Score error . . . . lambda(x) : 0.025
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 12653
+     Rate . . . . . . 0.2751
+
+  Bad points  . . . . 10650
+  False positives . . 336
+     Rate . . . . . . 0.0315
+
+
+  Score error . . . . lambda(x) : 0.038
+  Score threshold . . 0.20
+
+  Good points . . . . 45989
+  False negatives . . 8269
+     Rate . . . . . . 0.1798
+
+  Bad points  . . . . 10650
+  False positives . . 387
+     Rate . . . . . . 0.0363
