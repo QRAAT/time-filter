@@ -8,29 +8,30 @@ from scipy.optimize import curve_fit
 import os, sys, time
 import pickle
 
+
+exp = []
+
 for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
 
   print "Reading result%0.2f" % EST_SCORE_THRESHOLD
   (X, Y, pos, neg) = pickle.load(open('result%0.2f' % EST_SCORE_THRESHOLD))
   extent = [0.0, 4.0, 
             0.0, 0.2]
-
-  C_p = 2 
+  
+  ### Trade-off policy ###
+  C_p = 10 
   C_n = 1
-  tradeoff = np.zeros(pos.shape)
-  for i in range(X.shape[0]):
-    for j in range(Y.shape[0]):
-      tradeoff[j,i] = abs((C_p * pos[j,i]) - (C_n * neg[j,i]))
+  tradeoff = abs((C_p * pos) + (C_n * neg)) # TODO
 
   opt = []
+  opt_total_cost = 0
   for i in range(X.shape[0]):
     opt.append(Y[-np.argmin(tradeoff[:,i])])
+    opt_total_cost += np.min(tradeoff[:,i])
+  opt =  np.array(opt)
+  
 
-  Y = np.array(opt)
-  print "Optimal trade-off:\n", Y 
-
-
-  # Fit a curve to the optimal false positive / negative trade-off. 
+  # Hyperbolic f(x)
   class F:
 
     def __call__(self, x, a, b, c): 
@@ -42,24 +43,54 @@ for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
     def get(self, popt):
       return "lambda(x) : (%0.4f / (x + %0.4f)) + %0.4f" % tuple(popt)
 
+  print 
   try: 
     f = F()
-    popt, pcov = curve_fit(f.__call__, X, Y)
-    print "SCORE_ERROR =", f.get(popt)
+    popt, pcov = curve_fit(f.__call__, X, opt)
+    string = f.get(popt)
+    print "f(x) =", string
+    total_cost = 0
+    for x in X:
+      i = int(x / 0.04)
+      j = int(f(x, *popt) / 0.005) 
+      total_cost += tradeoff[-j,i]
+    print "   cost = %0.4f" % total_cost
+    exp.append((EST_SCORE_THRESHOLD, string, total_cost, "hyper"))
   except RuntimeError: 
     f = None
-    print "SCORE_ERROR = no fit" 
+    print "f(x) = no fit" 
 
-  coeff = np.polyfit(X, Y, 6)
+  print # 6-degree polynomial p(x)
+  coeff = np.polyfit(X, opt, 6)
   p = np.poly1d(coeff) 
-  print "SCORE_ERROR = np.poly1d(%s)" % map(lambda x : round(x, 5), list(coeff))
-  #print "p(0) = %0.4f" % p(0)
-  #print "p(1) = %0.4f" % p(1)
-  #print "p(2) = %0.4f" % p(2)
-  #print "p(3) = %0.4f" % p(3)
-  #print "p(4) = %0.4f" % p(4)
-  print
+  string = "np.poly1d(%s)" % map(lambda x : round(x, 5), list(coeff))
+  print "p(x) =", string
+  total_cost = 0
+  for x in X:
+    i = int(x / 0.04)
+    j = int(p(x) / 0.005) 
+    total_cost += tradeoff[-j,i]
+  print "   cost = %0.4f" % total_cost
+  exp.append((EST_SCORE_THRESHOLD, string, total_cost, "poly"))
+ 
+  print # Best constant pulse error 
+  total_costs = np.zeros(Y.shape)
+  for j in range(Y.shape[0]): 
+    total_costs[j] = np.sum(tradeoff[j,:])
+  const = Y[-np.argmin(total_costs)]
+  string = "lambda(x) : %0.4f" % const
+  print "const =", string
+  print "   cost = %0.4f" % (np.min(total_costs))
+  exp.append((EST_SCORE_THRESHOLD, string, total_cost, "const"))
 
+  print # Optimal trade-off
+  print "Optimal trade-off:\n", opt
+  print "  cost = %0.4f" % opt_total_cost 
+  exp.append((EST_SCORE_THRESHOLD, (opt, const), total_cost, "opt"))
+
+  ### Plot ###
+  Y = opt
+  
   # False positives
   pp.imshow(pos, extent=extent, aspect='auto', interpolation='nearest')
   pp.plot(X, Y, 'wo', label='Optimal trade-off')
@@ -104,3 +135,5 @@ for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
   pp.xlabel("Variation")
   pp.ylabel("Score error")
   pp.clf()
+
+pickle.dump(exp, open('exp', 'w'))
