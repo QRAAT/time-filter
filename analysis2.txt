@@ -22,11 +22,11 @@ False positive rate
        poly  = 0.0024    poly  = 0.0038    poly  = 0.0022    poly  = 0.0078    poly  = 0.0080    poly  = 0.0378    poly  = 0.0408    poly  = 0.0457    poly  = 0.0470    poly  = 0.0462    
        const = 0.0030    const = 0.0030    const = 0.0100    const = 0.0296    const = 0.0417    const = 0.0444    const = 0.0444    const = 0.0444    const = 0.0482    const = 0.0482    
        
-0.30   opt   = 0.0009    opt   = 0.0012    opt   = 0.0023    opt   =           opt   =           opt   =           opt   =           opt   =           opt   =           opt   =           
-       hyper =           hyper =           hyper = 0.0039    hyper =           hyper =           hyper =           hyper =           hyper =           hyper =           hyper =           
-       poly  = 0.0014    poly  = 0.0020    poly  = 0.0023    poly  =           poly  =           poly  =           poly  =           poly  =           poly  =           poly  =           
-       const = 0.0046    const = 0.0132    const = 0.0282    const =           const =           const =           const =           const =           const =           const =           
-      
+0.30   opt   = 0.0009    opt   = 0.0012    opt   = 0.0023   
+       hyper =           hyper =           hyper = 0.0039         
+       poly  = 0.0014    poly  = 0.0020    poly  = 0.0023  
+       const = 0.0046    const = 0.0132    const = 0.0282  
+       
 
 False negative rate
 -------------------
