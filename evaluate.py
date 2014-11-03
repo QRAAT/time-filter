@@ -34,54 +34,68 @@ try:
   good = {} 
   for p in points: 
     good[int(p.est_id)] = True if int(p.good) is 1 else False
+  
+  results = {}
+  X = set(); Y = set(); Z = set()
 
-  for (EST_SCORE_THRESHOLD, score_err_str, cost, pretty_str) in exp: 
-    
-    # Run filter. 
-    print "evaluate: running filter (%0.2f) ... " % EST_SCORE_THRESHOLD
-    if pretty_str == 'opt': 
-      (opt, const) = score_err_str
-      qraat.srv.signal.SCORE_ERROR = lambda(x) : _opt(x, opt, const)
-    else: 
-      qraat.srv.signal.SCORE_ERROR = eval(score_err_str)
-    (total, _) = qraat.srv.signal.Filter(db_con, dep_id, t_start, t_end)
-    
-    # Generate report. 
-    cur = db_con.cursor()
-    cur.execute('''SELECT estID, score / theoretical_score
-                     FROM estscore JOIN est ON est.ID = estscore.estID
-                    WHERE deploymentID = %s 
-                      AND timestamp >= %s
-                      AND timestamp < %s''', (dep_id, t_start, t_end))
+  for (score_thresh, policy_dict) in exp.iteritems():
+    X.add(score_thresh)
+    results[score_thresh] = {}
+    for (policy, curves) in policy_dict.iteritems():
+      Y.add(policy)
+      results[score_thresh][policy] = {}
+      for (score_err_str, cost, curve) in curves:
+        Z.add(curve)
 
-    false_pos = false_neg = 0
-    good_count = bad_count = 0
-    for (id, rel_score) in cur.fetchall():
-      if good.get(id) == None: 
-        #print 'Uh oh!', id
-        continue
-    
-      if good[id] and rel_score > EST_SCORE_THRESHOLD:        pass # Ok
-      elif not good[id] and rel_score <= EST_SCORE_THRESHOLD: pass # Ok
-      elif not good[id] and rel_score > EST_SCORE_THRESHOLD:  false_pos += 1 # False positive
-      elif good[id] and rel_score <= EST_SCORE_THRESHOLD:     false_neg += 1 # False negative
-      if good[id]: good_count += 1
-      else: bad_count += 1
-    
-    print 
-    print "Score error . . . . %s" % pretty_str
-    print "Score threshold . . %0.2f" % EST_SCORE_THRESHOLD
-    print 
-    print "Good points . . . . %d" % good_count
-    print "False negatives . . %d" % false_neg
-    print "   Rate . . . . . . %0.4f" % (float(false_neg) / good_count)
-    print 
-    print "Bad points  . . . . %d" % bad_count
-    print "False positives . . %d" % false_pos
-    print "   Rate . . . . . . %0.4f" % (float(false_pos) / bad_count)
-    print
+        # Run filter. 
+        print "evaluate: score thresh. %0.2f, policy %s, %s" % (score_thresh, policy, curve),
+        if curve == 'opt': 
+          print
+          (opt, const) = score_err_str
+          qraat.srv.signal.SCORE_ERROR = lambda(x) : _opt(x, opt, const)
+        else: 
+          print "=", score_err_str
+          qraat.srv.signal.SCORE_ERROR = eval(score_err_str)
+        (total, _) = qraat.srv.signal.Filter(db_con, dep_id, t_start, t_end)
+        
+        # Evaluate result.
+        cur = db_con.cursor()
+        cur.execute('''SELECT estID, score / theoretical_score
+                         FROM estscore JOIN est ON est.ID = estscore.estID
+                        WHERE deploymentID = %s 
+                          AND timestamp >= %s
+                          AND timestamp < %s''', (dep_id, t_start, t_end))
 
+        false_pos = false_neg = 0
+        good_count = bad_count = 0
+        for (id, rel_score) in cur.fetchall():
+          if good.get(id) == None: 
+            #print 'Uh oh!', id
+            continue
+        
+          if good[id] and rel_score > score_thresh:        pass # Ok
+          elif not good[id] and rel_score <= score_thresh: pass # Ok
+          elif not good[id] and rel_score > score_thresh:  false_pos += 1 # False positive
+          elif good[id] and rel_score <= score_thresh:     false_neg += 1 # False negative
+          if good[id]: good_count += 1
+          else: bad_count += 1
+       
+        print 
+        print "Good points . . . . %d" % good_count
+        print "False negatives . . %d" % false_neg
+        print "   Rate . . . . . . %0.4f" % (float(false_neg) / good_count)
+        print 
+        print "Bad points  . . . . %d" % bad_count
+        print "False positives . . %d" % false_pos
+        print "   Rate . . . . . . %0.4f" % (float(false_pos) / bad_count)
+        print
 
+        results[score_thresh][policy][curve] = (good_count, false_neg, float(false_neg) / good_count, 
+                                                bad_count, false_pos, float(false_pos) / bad_count, 
+                                                cost) 
+
+  pickle.dump((X, Y, Z, results), open('report', 'w'))
+  
 except mdb.Error, e:
   print >>sys.stderr, "evaluate: error: [%d] %s" % (e.args[0], e.args[1])
   sys.exit(1)
