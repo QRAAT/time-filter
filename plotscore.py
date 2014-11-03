@@ -11,17 +11,21 @@ import pickle
 
 exp = {}
 
-policies = [(10,1), (5,1)]
+policies = [(20, 1), (18, 1), (16, 1), (14, 1), (12, 1), (10,1), (8,1), (5,1), (3,1), (2,1)]
 
 for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
 
   exp[EST_SCORE_THRESHOLD] = {}
 
   for (Cp, Cn) in policies:
-
+    
+    if (Cp < 15 and EST_SCORE_THRESHOLD == 0.3): 
+      exp[EST_SCORE_THRESHOLD][(Cp, Cn)] = []
+      continue
+    
     curves = []
 
-    print "Reading result%0.2f" % EST_SCORE_THRESHOLD
+    print "Running %0.2f, (%d, %d)" % (EST_SCORE_THRESHOLD, Cp, Cn)
     (X, Y, pos, neg) = pickle.load(open('result%0.2f' % EST_SCORE_THRESHOLD))
     extent = [0.0, 4.0, 
               0.0, 0.2]
@@ -59,7 +63,7 @@ for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
       for x in X:
         i = int(x / 0.04)
         j = int(f(x, *popt) / 0.005) 
-        total_cost += tradeoff[-j,i]
+        if j < len(Y): total_cost += tradeoff[-j,i]
       print "   cost = %0.4f" % total_cost
       curves.append((string, total_cost, "hyper"))
     except RuntimeError: 

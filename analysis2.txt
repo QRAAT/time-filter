@@ -1,0 +1,985 @@
+Performance of various trade-off policies and a comparison of best-fit curves 
+to the optimal value. The specific curve used can be found after the summary. 
+
+  Cost function: S = Mp * Cp + Mn * Cn. 
+
+--------------------------------------------------------------------------------
+- SUMMARY                                                                      -
+--------------------------------------------------------------------------------
+
+False positive rate
+-------------------
+
+       (20, 1)           (18, 1)           (16, 1)           (14, 1)           (12, 1)           (10, 1)           ( 8, 1)           ( 5, 1)           ( 3, 1)           ( 2, 1)          
+
+0.10   opt   = 0.0159    opt   = 0.0159    opt   = 0.0159    opt   = 0.0159    opt   = 0.0184    opt   = 0.0301    opt   = 0.0500    opt   = 0.0588    opt   = 0.0631    opt   = 0.0670    
+       hyper = 0.0159    hyper = 0.0159    hyper =           hyper =           hyper =           hyper = 0.0369    hyper =           hyper =           hyper = 0.0623    hyper =           
+       poly  = 0.0159    poly  = 0.0159    poly  = 0.0159    poly  = 0.0148    poly  = 0.0176    poly  = 0.0414    poly  = 0.0506    poly  = 0.0573    poly  = 0.0630    poly  = 0.0625    
+       const = 0.0159    const = 0.0159    const = 0.0159    const = 0.0159    const = 0.0306    const = 0.0502    const = 0.0551    const = 0.0587    const = 0.0649    const = 0.0649    
+       
+0.20   opt   = 0.0030    opt   = 0.0030    opt   = 0.0034    opt   = 0.0054    opt   = 0.0078    opt   = 0.0229    opt   = 0.0386    opt   = 0.0441    opt   = 0.0458    opt   = 0.0471    
+       hyper =           hyper =           hyper =           hyper =           hyper = 0.0077    hyper = 0.0346    hyper = 0.0412    hyper = 0.0441    hyper = 0.0472    hyper = 0.0463    
+       poly  = 0.0024    poly  = 0.0038    poly  = 0.0022    poly  = 0.0078    poly  = 0.0080    poly  = 0.0378    poly  = 0.0408    poly  = 0.0457    poly  = 0.0470    poly  = 0.0462    
+       const = 0.0030    const = 0.0030    const = 0.0100    const = 0.0296    const = 0.0417    const = 0.0444    const = 0.0444    const = 0.0444    const = 0.0482    const = 0.0482    
+       
+0.30   opt   = 0.0009    opt   = 0.0012    opt   = 0.0023    opt   =           opt   =           opt   =           opt   =           opt   =           opt   =           opt   =           
+       hyper =           hyper =           hyper = 0.0039    hyper =           hyper =           hyper =           hyper =           hyper =           hyper =           hyper =           
+       poly  = 0.0014    poly  = 0.0020    poly  = 0.0023    poly  =           poly  =           poly  =           poly  =           poly  =           poly  =           poly  =           
+       const = 0.0046    const = 0.0132    const = 0.0282    const =           const =           const =           const =           const =           const =           const =           
+      
+
+False negative rate
+-------------------
+
+       (20, 1)           (18, 1)           (16, 1)           (14, 1)           (12, 1)           (10, 1)           ( 8, 1)           ( 5, 1)           ( 3, 1)           ( 2, 1)          
+
+0.10   opt   = 0.6238    opt   = 0.6238    opt   = 0.6238    opt   = 0.6238    opt   = 0.6216    opt   = 0.5889    opt   = 0.2273    opt   = 0.0316    opt   = 0.0302    opt   = 0.0280    
+       hyper = 0.6238    hyper = 0.6238    hyper =           hyper =           hyper =           hyper = 0.3778    hyper =           hyper =           hyper = 0.0396    hyper =           
+       poly  = 0.6238    poly  = 0.6238    poly  = 0.6752    poly  = 0.6288    poly  = 0.5796    poly  = 0.3214    poly  = 0.1228    poly  = 0.0369    poly  = 0.0346    poly  = 0.0283    
+       const = 0.6238    const = 0.6238    const = 0.6238    const = 0.6238    const = 0.3873    const = 0.1766    const = 0.0802    const = 0.0526    const = 0.0305    const = 0.0305    
+       
+0.20   opt   = 0.8998    opt   = 0.8998    opt   = 0.8998    opt   = 0.8937    opt   = 0.8793    opt   = 0.7812    opt   = 0.3212    opt   = 0.0747    opt   = 0.0608    opt   = 0.0555    
+       hyper =           hyper =           hyper =           hyper =           hyper = 0.8621    hyper = 0.2770    hyper = 0.1813    hyper = 0.0987    hyper = 0.0588    hyper = 0.0518    
+       poly  = 0.9462    poly  = 0.8200    poly  = 0.9771    poly  = 0.7597    poly  = 0.8520    poly  = 0.1714    poly  = 0.1337    poly  = 0.0683    poly  = 0.0540    poly  = 0.0571    
+       const = 0.8998    const = 0.8998    const = 0.7317    const = 0.3000    const = 0.0943    const = 0.0719    const = 0.0719    const = 0.0719    const = 0.0489    const = 0.0489    
+       
+0.30   opt   = 0.9765    opt   = 0.9729    opt   = 0.9710   
+       hyper =           hyper =           hyper = 0.8448  
+       poly  = 0.9025    poly  = 0.9157    poly  = 0.9644   
+       const = 0.8453    const = 0.6330    const = 0.2488   
+      
+
+Total cost
+----------
+
+       (20, 1)            (18, 1)            (16, 1)            (14, 1)            (12, 1)           (10, 1)           ( 8, 1)           ( 5, 1)           ( 3, 1)           ( 2, 1)          
+
+0.10   opt   = 111.23     opt   = 106.15     opt   = 115.49     opt   = 104.45     opt   = 89.51     opt   = 77.05     opt   = 64.33     opt   = 42.47     opt   = 27.19     opt   = 19.02     
+       hyper = 138.34     hyper = 129.01     hyper =            hyper =            hyper =           hyper = 77.06     hyper =           hyper =           hyper = 27.30     hyper =           
+       poly  = 111.23     poly  = 106.15     poly  = 115.49     poly  = 104.45     poly  = 89.51     poly  = 77.05     poly  = 64.33     poly  = 42.47     poly  = 27.19     poly  = 19.02     
+       const = 111.23     const = 106.15     const = 115.49     const = 104.45     const = 89.51     const = 77.05     const = 64.33     const = 42.47     const = 27.19     const = 19.02     
+       
+0.20   opt   = 117.04     opt   = 110.55     opt   = 100.52     opt   = 91.58     opt   = 79.12     opt   = 68.37     opt   = 55.79     opt   = 37.35     opt   = 24.01     opt   = 17.52     
+       hyper =            hyper =            hyper =            hyper =           hyper = 80.21     hyper = 68.12     hyper = 55.94     hyper = 37.37     hyper = 24.51     hyper = 17.43     
+       poly  = 117.04     poly  = 110.55     poly  = 100.52     poly  = 91.58     poly  = 79.12     poly  = 68.37     poly  = 55.79     poly  = 37.35     poly  = 24.01     poly  = 17.52     
+       const = 117.04     const = 110.55     const = 100.52     const = 91.58     const = 79.12     const = 68.37     const = 55.79     const = 37.35     const = 24.01     const = 17.52     
+       
+0.30   opt   = 102.64     opt   = 96.84     opt   = 88.82    
+       hyper =            hyper =           hyper = 92.93   
+       poly  = 102.64     poly  = 96.84     poly  = 88.82    
+       const = 102.64     const = 96.84     const = 88.82   
+      
+
+False positive count
+--------------------
+
+       (20, 1)           (18, 1)           (16, 1)           (14, 1)           (12, 1)           (10, 1)           ( 8, 1)           ( 5, 1)           ( 3, 1)           ( 2, 1)          
+
+0.10   opt   = 169       opt   = 169       opt   = 169       opt   = 169       opt   = 196       opt   = 321       opt   = 532       opt   = 626       opt   = 672       opt   = 714       
+       hyper = 169       hyper = 169       hyper =           hyper =           hyper =           hyper = 393       hyper =           hyper =           hyper = 663       hyper =           
+       poly  = 169       poly  = 169       poly  = 169       poly  = 158       poly  = 187       poly  = 441       poly  = 539       poly  = 610       poly  = 671       poly  = 666       
+       const = 169       const = 169       const = 169       const = 169       const = 326       const = 535       const = 587       const = 625       const = 691       const = 691       
+       
+0.20   opt   = 32        opt   = 32        opt   = 36        opt   = 58        opt   = 83        opt   = 244       opt   = 411       opt   = 470       opt   = 488       opt   = 502       
+       hyper =           hyper =           hyper =           hyper =           hyper = 82        hyper = 368       hyper = 439       hyper = 470       hyper = 503       hyper = 493       
+       poly  = 26        poly  = 41        poly  = 23        poly  = 83        poly  = 85        poly  = 403       poly  = 435       poly  = 487       poly  = 501       poly  = 492       
+       const = 32        const = 32        const = 106       const = 315       const = 444       const = 473       const = 473       const = 473       const = 513       const = 513       
+       
+0.30   opt   = 10        opt   = 13        opt   = 24     
+       hyper =           hyper =           hyper = 42     
+       poly  = 15        poly  = 21        poly  = 25     
+       const = 49        const = 141       const = 300    
+      
+
+False negative count
+--------------------
+
+       (20, 1)           (18, 1)           (16, 1)           (14, 1)           (12, 1)           (10, 1)           ( 8, 1)           ( 5, 1)           ( 3, 1)           ( 2, 1)          
+
+0.10   opt   = 28687     opt   = 28687     opt   = 28687     opt   = 28687     opt   = 28586     opt   = 27084     opt   = 10455     opt   = 1452      opt   = 1387      opt   = 1289      
+       hyper = 28687     hyper = 28687     hyper =           hyper =           hyper =           hyper = 17375     hyper =           hyper =           hyper = 1820      hyper =           
+       poly  = 28687     poly  = 28687     poly  = 31050     poly  = 28918     poly  = 26657     poly  = 14780     poly  = 5647      poly  = 1695      poly  = 1590      poly  = 1303      
+       const = 28687     const = 28687     const = 28687     const = 28687     const = 17813     const = 8123      const = 3688      const = 2418      const = 1404      const = 1404      
+       
+0.20   opt   = 41379     opt   = 41379     opt   = 41379     opt   = 41101     opt   = 40439     opt   = 35928     opt   = 14771     opt   = 3434      opt   = 2795      opt   = 2554      
+       hyper =           hyper =           hyper =           hyper =           hyper = 39647     hyper = 12741     hyper = 8338      hyper = 4539      hyper = 2702      hyper = 2382      
+       poly  = 43513     poly  = 37711     poly  = 44935     poly  = 34936     poly  = 39184     poly  = 7881      poly  = 6149      poly  = 3143      poly  = 2484      poly  = 2625      
+       const = 41379     const = 41379     const = 33649     const = 13795     const = 4338      const = 3305      const = 3305      const = 3305      const = 2249      const = 2249      
+       
+0.30   opt   = 44909     opt   = 44741     opt   = 44655    
+       hyper =           hyper =           hyper = 38853   
+       poly  = 41503     poly  = 42114     poly  = 44353    
+       const = 38876     const = 29109     const = 11440    
+      
+
+--------------------------------------------------------------------------------
+- CURVES                                                                       -
+--------------------------------------------------------------------------------
+
+score thresh. 0.30, policy (20, 1), poly = np.poly1d([0.0032, -0.0403, 0.18711, -0.39082, 0.36213, -0.11547, 0.01238])
+score thresh. 0.30, policy (20, 1), const = lambda(x) : 0.0150
+score thresh. 0.30, policy (16, 1), hyper = lambda(x) : (-1.6657 / (x + 4.6569)) + 0.3415
+score thresh. 0.30, policy (16, 1), poly = np.poly1d([-0.00015, 0.00298, -0.01657, 0.02644, 0.01669, -0.00273, 0.00672])
+score thresh. 0.30, policy (16, 1), const = lambda(x) : 0.1150
+score thresh. 0.30, policy (18, 1), poly = np.poly1d([0.00549, -0.06398, 0.27166, -0.50912, 0.41522, -0.11133, 0.01169])
+score thresh. 0.30, policy (18, 1), const = lambda(x) : 0.0300
+score thresh. 0.10, policy (12, 1), poly = np.poly1d([0.00086, -0.0107, 0.04983, -0.10601, 0.10075, -0.03116, 0.00682])
+score thresh. 0.10, policy (12, 1), const = lambda(x) : 0.0100
+score thresh. 0.10, policy (8, 1), poly = np.poly1d([-0.00027, 0.00223, -0.00406, -0.00679, 0.02153, -0.00626, 0.02695])
+score thresh. 0.10, policy (8, 1), const = lambda(x) : 0.0350
+score thresh. 0.10, policy (3, 1), hyper = lambda(x) : (-1.8726 / (x + 7.7716)) + 0.3027
+score thresh. 0.10, policy (3, 1), poly = np.poly1d([-0.00436, 0.04984, -0.20331, 0.33339, -0.13063, -0.09041, 0.10751])
+score thresh. 0.10, policy (3, 1), const = lambda(x) : 0.1300
+score thresh. 0.10, policy (20, 1), hyper = lambda(x) : (-0.0000 / (x + 1.7713)) + 0.0050
+score thresh. 0.10, policy (20, 1), poly = np.poly1d([0.0, -0.0, 0.0, 0.0, -0.0, -0.0, 0.005])
+score thresh. 0.10, policy (20, 1), const = lambda(x) : 0.0050
+score thresh. 0.10, policy (2, 1), poly = np.poly1d([-0.00251, 0.03143, -0.14762, 0.3156, -0.28674, 0.07101, 0.12576])
+score thresh. 0.10, policy (2, 1), const = lambda(x) : 0.1300
+score thresh. 0.10, policy (16, 1), poly = np.poly1d([-0.00027, 0.00307, -0.01293, 0.02497, -0.02198, 0.00743, 0.00447])
+score thresh. 0.10, policy (16, 1), const = lambda(x) : 0.0050
+score thresh. 0.10, policy (14, 1), poly = np.poly1d([0.0003, -0.00365, 0.01635, -0.03285, 0.02945, -0.00995, 0.0057])
+score thresh. 0.10, policy (14, 1), const = lambda(x) : 0.0050
+score thresh. 0.10, policy (10, 1), hyper = lambda(x) : (-1.2875 / (x + 11.5872)) + 0.1214
+score thresh. 0.10, policy (10, 1), poly = np.poly1d([0.00068, -0.00731, 0.02813, -0.04735, 0.03484, -0.00378, 0.01286])
+score thresh. 0.10, policy (10, 1), const = lambda(x) : 0.0200
+score thresh. 0.10, policy (5, 1), poly = np.poly1d([0.00132, -0.01822, 0.09855, -0.26345, 0.35467, -0.20981, 0.07982])
+score thresh. 0.10, policy (5, 1), const = lambda(x) : 0.0500
+score thresh. 0.10, policy (18, 1), hyper = lambda(x) : (-0.0000 / (x + 1.7713)) + 0.0050
+score thresh. 0.10, policy (18, 1), poly = np.poly1d([0.0, -0.0, 0.0, 0.0, -0.0, -0.0, 0.005])
+score thresh. 0.10, policy (18, 1), const = lambda(x) : 0.0050
+score thresh. 0.20, policy (12, 1), hyper = lambda(x) : (-0.4579 / (x + 2.4432)) + 0.1810
+score thresh. 0.20, policy (12, 1), poly = np.poly1d([-0.00086, 0.00676, -0.01072, -0.02995, 0.0872, -0.01221, 0.00681])
+score thresh. 0.20, policy (12, 1), const = lambda(x) : 0.0800
+score thresh. 0.20, policy (8, 1), hyper = lambda(x) : (-0.0081 / (x + 0.1185)) + 0.1087
+score thresh. 0.20, policy (8, 1), poly = np.poly1d([0.00031, -0.00276, 0.00498, 0.02105, -0.09318, 0.12136, 0.05464])
+score thresh. 0.20, policy (8, 1), const = lambda(x) : 0.1050
+score thresh. 0.20, policy (3, 1), hyper = lambda(x) : (-0.0006 / (x + 0.0115)) + 0.1737
+score thresh. 0.20, policy (3, 1), poly = np.poly1d([-0.00233, 0.03072, -0.15587, 0.37968, -0.44656, 0.22101, 0.14128])
+score thresh. 0.20, policy (3, 1), const = lambda(x) : 0.1750
+score thresh. 0.20, policy (20, 1), poly = np.poly1d([-0.00081, 0.0092, -0.0388, 0.07492, -0.06595, 0.02229, 0.0034])
+score thresh. 0.20, policy (20, 1), const = lambda(x) : 0.0050
+score thresh. 0.20, policy (2, 1), hyper = lambda(x) : (-0.0005 / (x + 0.0475)) + 0.1754
+score thresh. 0.20, policy (2, 1), poly = np.poly1d([-0.00037, 0.00485, -0.0247, 0.06157, -0.07721, 0.04439, 0.16643])
+score thresh. 0.20, policy (2, 1), const = lambda(x) : 0.1750
+score thresh. 0.20, policy (16, 1), poly = np.poly1d([-0.00099, 0.01278, -0.06275, 0.14138, -0.13632, 0.0471, 0.00175])
+score thresh. 0.20, policy (16, 1), const = lambda(x) : 0.0100
+score thresh. 0.20, policy (14, 1), poly = np.poly1d([0.00475, -0.05601, 0.24476, -0.48517, 0.42717, -0.11684, 0.01073])
+score thresh. 0.20, policy (14, 1), const = lambda(x) : 0.0300
+score thresh. 0.20, policy (10, 1), hyper = lambda(x) : (-0.0725 / (x + 0.7790)) + 0.1235
+score thresh. 0.20, policy (10, 1), poly = np.poly1d([0.0023, -0.02907, 0.13947, -0.31092, 0.30525, -0.06687, 0.04754])
+score thresh. 0.20, policy (10, 1), const = lambda(x) : 0.1050
+score thresh. 0.20, policy (5, 1), hyper = lambda(x) : (-0.1203 / (x + 0.8986)) + 0.2086
+score thresh. 0.20, policy (5, 1), poly = np.poly1d([0.00162, -0.02291, 0.1252, -0.32689, 0.38984, -0.12373, 0.10421])
+score thresh. 0.20, policy (5, 1), const = lambda(x) : 0.1050
+score thresh. 0.20, policy (18, 1), poly = np.poly1d([0.00133, -0.01645, 0.075, -0.15353, 0.14023, -0.04827, 0.00848])
+score thresh. 0.20, policy (18, 1), const = lambda(x) : 0.0050
+
+
+
+--------------------------------------------------------------------------------
+- OUTPUT OF `evaluate.py`                                                      -
+--------------------------------------------------------------------------------
+
+evaluate: start time: Mon Nov  3 14:52:32 2014
+evaluate: loading test data ... 
+evaluate: score thresh. 0.30, policy (20, 1), poly = np.poly1d([0.0032, -0.0403, 0.18711, -0.39082, 0.36213, -0.11547, 0.01238])
+
+Good points . . . . 45989
+False negatives . . 41503
+   Rate . . . . . . 0.9025
+
+Bad points  . . . . 10650
+False positives . . 15
+   Rate . . . . . . 0.0014
+
+evaluate: score thresh. 0.30, policy (20, 1), const = lambda(x) : 0.0150
+
+Good points . . . . 45989
+False negatives . . 38876
+   Rate . . . . . . 0.8453
+
+Bad points  . . . . 10650
+False positives . . 49
+   Rate . . . . . . 0.0046
+
+evaluate: score thresh. 0.30, policy (20, 1), opt
+
+Good points . . . . 45989
+False negatives . . 44909
+   Rate . . . . . . 0.9765
+
+Bad points  . . . . 10650
+False positives . . 10
+   Rate . . . . . . 0.0009
+
+evaluate: score thresh. 0.30, policy (16, 1), hyper = lambda(x) : (-1.6657 / (x + 4.6569)) + 0.3415
+
+Good points . . . . 45989
+False negatives . . 38853
+   Rate . . . . . . 0.8448
+
+Bad points  . . . . 10650
+False positives . . 42
+   Rate . . . . . . 0.0039
+
+evaluate: score thresh. 0.30, policy (16, 1), poly = np.poly1d([-0.00015, 0.00298, -0.01657, 0.02644, 0.01669, -0.00273, 0.00672])
+
+Good points . . . . 45989
+False negatives . . 44353
+   Rate . . . . . . 0.9644
+
+Bad points  . . . . 10650
+False positives . . 25
+   Rate . . . . . . 0.0023
+
+evaluate: score thresh. 0.30, policy (16, 1), const = lambda(x) : 0.1150
+
+Good points . . . . 45989
+False negatives . . 11440
+   Rate . . . . . . 0.2488
+
+Bad points  . . . . 10650
+False positives . . 300
+   Rate . . . . . . 0.0282
+
+evaluate: score thresh. 0.30, policy (16, 1), opt
+
+Good points . . . . 45989
+False negatives . . 44655
+   Rate . . . . . . 0.9710
+
+Bad points  . . . . 10650
+False positives . . 24
+   Rate . . . . . . 0.0023
+
+evaluate: score thresh. 0.30, policy (18, 1), poly = np.poly1d([0.00549, -0.06398, 0.27166, -0.50912, 0.41522, -0.11133, 0.01169])
+
+Good points . . . . 45989
+False negatives . . 42114
+   Rate . . . . . . 0.9157
+
+Bad points  . . . . 10650
+False positives . . 21
+   Rate . . . . . . 0.0020
+
+evaluate: score thresh. 0.30, policy (18, 1), const = lambda(x) : 0.0300
+
+Good points . . . . 45989
+False negatives . . 29109
+   Rate . . . . . . 0.6330
+
+Bad points  . . . . 10650
+False positives . . 141
+   Rate . . . . . . 0.0132
+
+evaluate: score thresh. 0.30, policy (18, 1), opt
+
+Good points . . . . 45989
+False negatives . . 44741
+   Rate . . . . . . 0.9729
+
+Bad points  . . . . 10650
+False positives . . 13
+   Rate . . . . . . 0.0012
+
+evaluate: score thresh. 0.10, policy (12, 1), poly = np.poly1d([0.00086, -0.0107, 0.04983, -0.10601, 0.10075, -0.03116, 0.00682])
+
+Good points . . . . 45989
+False negatives . . 26657
+   Rate . . . . . . 0.5796
+
+Bad points  . . . . 10650
+False positives . . 187
+   Rate . . . . . . 0.0176
+
+evaluate: score thresh. 0.10, policy (12, 1), const = lambda(x) : 0.0100
+
+Good points . . . . 45989
+False negatives . . 17813
+   Rate . . . . . . 0.3873
+
+Bad points  . . . . 10650
+False positives . . 326
+   Rate . . . . . . 0.0306
+
+evaluate: score thresh. 0.10, policy (12, 1), opt
+
+Good points . . . . 45989
+False negatives . . 28586
+   Rate . . . . . . 0.6216
+
+Bad points  . . . . 10650
+False positives . . 196
+   Rate . . . . . . 0.0184
+
+evaluate: score thresh. 0.10, policy (8, 1), poly = np.poly1d([-0.00027, 0.00223, -0.00406, -0.00679, 0.02153, -0.00626, 0.02695])
+
+Good points . . . . 45989
+False negatives . . 5647
+   Rate . . . . . . 0.1228
+
+Bad points  . . . . 10650
+False positives . . 539
+   Rate . . . . . . 0.0506
+
+evaluate: score thresh. 0.10, policy (8, 1), const = lambda(x) : 0.0350
+
+Good points . . . . 45989
+False negatives . . 3688
+   Rate . . . . . . 0.0802
+
+Bad points  . . . . 10650
+False positives . . 587
+   Rate . . . . . . 0.0551
+
+evaluate: score thresh. 0.10, policy (8, 1), opt
+
+Good points . . . . 45989
+False negatives . . 10455
+   Rate . . . . . . 0.2273
+
+Bad points  . . . . 10650
+False positives . . 532
+   Rate . . . . . . 0.0500
+
+evaluate: score thresh. 0.10, policy (3, 1), hyper = lambda(x) : (-1.8726 / (x + 7.7716)) + 0.3027
+
+Good points . . . . 45989
+False negatives . . 1820
+   Rate . . . . . . 0.0396
+
+Bad points  . . . . 10650
+False positives . . 663
+   Rate . . . . . . 0.0623
+
+evaluate: score thresh. 0.10, policy (3, 1), poly = np.poly1d([-0.00436, 0.04984, -0.20331, 0.33339, -0.13063, -0.09041, 0.10751])
+
+Good points . . . . 45989
+False negatives . . 1590
+   Rate . . . . . . 0.0346
+
+Bad points  . . . . 10650
+False positives . . 671
+   Rate . . . . . . 0.0630
+
+evaluate: score thresh. 0.10, policy (3, 1), const = lambda(x) : 0.1300
+
+Good points . . . . 45989
+False negatives . . 1404
+   Rate . . . . . . 0.0305
+
+Bad points  . . . . 10650
+False positives . . 691
+   Rate . . . . . . 0.0649
+
+evaluate: score thresh. 0.10, policy (3, 1), opt
+
+Good points . . . . 45989
+False negatives . . 1387
+   Rate . . . . . . 0.0302
+
+Bad points  . . . . 10650
+False positives . . 672
+   Rate . . . . . . 0.0631
+
+evaluate: score thresh. 0.10, policy (20, 1), hyper = lambda(x) : (-0.0000 / (x + 1.7713)) + 0.0050
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (20, 1), poly = np.poly1d([0.0, -0.0, 0.0, 0.0, -0.0, -0.0, 0.005])
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (20, 1), const = lambda(x) : 0.0050
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (20, 1), opt
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (2, 1), poly = np.poly1d([-0.00251, 0.03143, -0.14762, 0.3156, -0.28674, 0.07101, 0.12576])
+
+Good points . . . . 45989
+False negatives . . 1303
+   Rate . . . . . . 0.0283
+
+Bad points  . . . . 10650
+False positives . . 666
+   Rate . . . . . . 0.0625
+
+evaluate: score thresh. 0.10, policy (2, 1), const = lambda(x) : 0.1300
+
+Good points . . . . 45989
+False negatives . . 1404
+   Rate . . . . . . 0.0305
+
+Bad points  . . . . 10650
+False positives . . 691
+   Rate . . . . . . 0.0649
+
+evaluate: score thresh. 0.10, policy (2, 1), opt
+
+Good points . . . . 45989
+False negatives . . 1289
+   Rate . . . . . . 0.0280
+
+Bad points  . . . . 10650
+False positives . . 714
+   Rate . . . . . . 0.0670
+
+evaluate: score thresh. 0.10, policy (16, 1), poly = np.poly1d([-0.00027, 0.00307, -0.01293, 0.02497, -0.02198, 0.00743, 0.00447])
+
+Good points . . . . 45989
+False negatives . . 31050
+   Rate . . . . . . 0.6752
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (16, 1), const = lambda(x) : 0.0050
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (16, 1), opt
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (14, 1), poly = np.poly1d([0.0003, -0.00365, 0.01635, -0.03285, 0.02945, -0.00995, 0.0057])
+
+Good points . . . . 45989
+False negatives . . 28918
+   Rate . . . . . . 0.6288
+
+Bad points  . . . . 10650
+False positives . . 158
+   Rate . . . . . . 0.0148
+
+evaluate: score thresh. 0.10, policy (14, 1), const = lambda(x) : 0.0050
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (14, 1), opt
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (10, 1), hyper = lambda(x) : (-1.2875 / (x + 11.5872)) + 0.1214
+
+Good points . . . . 45989
+False negatives . . 17375
+   Rate . . . . . . 0.3778
+
+Bad points  . . . . 10650
+False positives . . 393
+   Rate . . . . . . 0.0369
+
+evaluate: score thresh. 0.10, policy (10, 1), poly = np.poly1d([0.00068, -0.00731, 0.02813, -0.04735, 0.03484, -0.00378, 0.01286])
+
+Good points . . . . 45989
+False negatives . . 14780
+   Rate . . . . . . 0.3214
+
+Bad points  . . . . 10650
+False positives . . 441
+   Rate . . . . . . 0.0414
+
+evaluate: score thresh. 0.10, policy (10, 1), const = lambda(x) : 0.0200
+
+Good points . . . . 45989
+False negatives . . 8123
+   Rate . . . . . . 0.1766
+
+Bad points  . . . . 10650
+False positives . . 535
+   Rate . . . . . . 0.0502
+
+evaluate: score thresh. 0.10, policy (10, 1), opt
+
+Good points . . . . 45989
+False negatives . . 27084
+   Rate . . . . . . 0.5889
+
+Bad points  . . . . 10650
+False positives . . 321
+   Rate . . . . . . 0.0301
+
+evaluate: score thresh. 0.10, policy (5, 1), poly = np.poly1d([0.00132, -0.01822, 0.09855, -0.26345, 0.35467, -0.20981, 0.07982])
+
+Good points . . . . 45989
+False negatives . . 1695
+   Rate . . . . . . 0.0369
+
+Bad points  . . . . 10650
+False positives . . 610
+   Rate . . . . . . 0.0573
+
+evaluate: score thresh. 0.10, policy (5, 1), const = lambda(x) : 0.0500
+
+Good points . . . . 45989
+False negatives . . 2418
+   Rate . . . . . . 0.0526
+
+Bad points  . . . . 10650
+False positives . . 625
+   Rate . . . . . . 0.0587
+
+evaluate: score thresh. 0.10, policy (5, 1), opt
+
+Good points . . . . 45989
+False negatives . . 1452
+   Rate . . . . . . 0.0316
+
+Bad points  . . . . 10650
+False positives . . 626
+   Rate . . . . . . 0.0588
+
+evaluate: score thresh. 0.10, policy (18, 1), hyper = lambda(x) : (-0.0000 / (x + 1.7713)) + 0.0050
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (18, 1), poly = np.poly1d([0.0, -0.0, 0.0, 0.0, -0.0, -0.0, 0.005])
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (18, 1), const = lambda(x) : 0.0050
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.10, policy (18, 1), opt
+
+Good points . . . . 45989
+False negatives . . 28687
+   Rate . . . . . . 0.6238
+
+Bad points  . . . . 10650
+False positives . . 169
+   Rate . . . . . . 0.0159
+
+evaluate: score thresh. 0.20, policy (12, 1), hyper = lambda(x) : (-0.4579 / (x + 2.4432)) + 0.1810
+
+Good points . . . . 45989
+False negatives . . 39647
+   Rate . . . . . . 0.8621
+
+Bad points  . . . . 10650
+False positives . . 82
+   Rate . . . . . . 0.0077
+
+evaluate: score thresh. 0.20, policy (12, 1), poly = np.poly1d([-0.00086, 0.00676, -0.01072, -0.02995, 0.0872, -0.01221, 0.00681])
+
+Good points . . . . 45989
+False negatives . . 39184
+   Rate . . . . . . 0.8520
+
+Bad points  . . . . 10650
+False positives . . 85
+   Rate . . . . . . 0.0080
+
+evaluate: score thresh. 0.20, policy (12, 1), const = lambda(x) : 0.0800
+
+Good points . . . . 45989
+False negatives . . 4338
+   Rate . . . . . . 0.0943
+
+Bad points  . . . . 10650
+False positives . . 444
+   Rate . . . . . . 0.0417
+
+evaluate: score thresh. 0.20, policy (12, 1), opt
+
+Good points . . . . 45989
+False negatives . . 40439
+   Rate . . . . . . 0.8793
+
+Bad points  . . . . 10650
+False positives . . 83
+   Rate . . . . . . 0.0078
+
+evaluate: score thresh. 0.20, policy (8, 1), hyper = lambda(x) : (-0.0081 / (x + 0.1185)) + 0.1087
+
+Good points . . . . 45989
+False negatives . . 8338
+   Rate . . . . . . 0.1813
+
+Bad points  . . . . 10650
+False positives . . 439
+   Rate . . . . . . 0.0412
+
+evaluate: score thresh. 0.20, policy (8, 1), poly = np.poly1d([0.00031, -0.00276, 0.00498, 0.02105, -0.09318, 0.12136, 0.05464])
+
+Good points . . . . 45989
+False negatives . . 6149
+   Rate . . . . . . 0.1337
+
+Bad points  . . . . 10650
+False positives . . 435
+   Rate . . . . . . 0.0408
+
+evaluate: score thresh. 0.20, policy (8, 1), const = lambda(x) : 0.1050
+
+Good points . . . . 45989
+False negatives . . 3305
+   Rate . . . . . . 0.0719
+
+Bad points  . . . . 10650
+False positives . . 473
+   Rate . . . . . . 0.0444
+
+evaluate: score thresh. 0.20, policy (8, 1), opt
+
+Good points . . . . 45989
+False negatives . . 14771
+   Rate . . . . . . 0.3212
+
+Bad points  . . . . 10650
+False positives . . 411
+   Rate . . . . . . 0.0386
+
+evaluate: score thresh. 0.20, policy (3, 1), hyper = lambda(x) : (-0.0006 / (x + 0.0115)) + 0.1737
+
+Good points . . . . 45989
+False negatives . . 2702
+   Rate . . . . . . 0.0588
+
+Bad points  . . . . 10650
+False positives . . 503
+   Rate . . . . . . 0.0472
+
+evaluate: score thresh. 0.20, policy (3, 1), poly = np.poly1d([-0.00233, 0.03072, -0.15587, 0.37968, -0.44656, 0.22101, 0.14128])
+
+Good points . . . . 45989
+False negatives . . 2484
+   Rate . . . . . . 0.0540
+
+Bad points  . . . . 10650
+False positives . . 501
+   Rate . . . . . . 0.0470
+
+evaluate: score thresh. 0.20, policy (3, 1), const = lambda(x) : 0.1750
+
+Good points . . . . 45989
+False negatives . . 2249
+   Rate . . . . . . 0.0489
+
+Bad points  . . . . 10650
+False positives . . 513
+   Rate . . . . . . 0.0482
+
+evaluate: score thresh. 0.20, policy (3, 1), opt
+
+Good points . . . . 45989
+False negatives . . 2795
+   Rate . . . . . . 0.0608
+
+Bad points  . . . . 10650
+False positives . . 488
+   Rate . . . . . . 0.0458
+
+evaluate: score thresh. 0.20, policy (20, 1), poly = np.poly1d([-0.00081, 0.0092, -0.0388, 0.07492, -0.06595, 0.02229, 0.0034])
+
+Good points . . . . 45989
+False negatives . . 43513
+   Rate . . . . . . 0.9462
+
+Bad points  . . . . 10650
+False positives . . 26
+   Rate . . . . . . 0.0024
+
+evaluate: score thresh. 0.20, policy (20, 1), const = lambda(x) : 0.0050
+
+Good points . . . . 45989
+False negatives . . 41379
+   Rate . . . . . . 0.8998
+
+Bad points  . . . . 10650
+False positives . . 32
+   Rate . . . . . . 0.0030
+
+evaluate: score thresh. 0.20, policy (20, 1), opt
+
+Good points . . . . 45989
+False negatives . . 41379
+   Rate . . . . . . 0.8998
+
+Bad points  . . . . 10650
+False positives . . 32
+   Rate . . . . . . 0.0030
+
+evaluate: score thresh. 0.20, policy (2, 1), hyper = lambda(x) : (-0.0005 / (x + 0.0475)) + 0.1754
+
+Good points . . . . 45989
+False negatives . . 2382
+   Rate . . . . . . 0.0518
+
+Bad points  . . . . 10650
+False positives . . 493
+   Rate . . . . . . 0.0463
+
+evaluate: score thresh. 0.20, policy (2, 1), poly = np.poly1d([-0.00037, 0.00485, -0.0247, 0.06157, -0.07721, 0.04439, 0.16643])
+
+Good points . . . . 45989
+False negatives . . 2625
+   Rate . . . . . . 0.0571
+
+Bad points  . . . . 10650
+False positives . . 492
+   Rate . . . . . . 0.0462
+
+evaluate: score thresh. 0.20, policy (2, 1), const = lambda(x) : 0.1750
+
+Good points . . . . 45989
+False negatives . . 2249
+   Rate . . . . . . 0.0489
+
+Bad points  . . . . 10650
+False positives . . 513
+   Rate . . . . . . 0.0482
+
+evaluate: score thresh. 0.20, policy (2, 1), opt
+
+Good points . . . . 45989
+False negatives . . 2554
+   Rate . . . . . . 0.0555
+
+Bad points  . . . . 10650
+False positives . . 502
+   Rate . . . . . . 0.0471
+
+evaluate: score thresh. 0.20, policy (16, 1), poly = np.poly1d([-0.00099, 0.01278, -0.06275, 0.14138, -0.13632, 0.0471, 0.00175])
+
+Good points . . . . 45989
+False negatives . . 44935
+   Rate . . . . . . 0.9771
+
+Bad points  . . . . 10650
+False positives . . 23
+   Rate . . . . . . 0.0022
+
+evaluate: score thresh. 0.20, policy (16, 1), const = lambda(x) : 0.0100
+
+Good points . . . . 45989
+False negatives . . 33649
+   Rate . . . . . . 0.7317
+
+Bad points  . . . . 10650
+False positives . . 106
+   Rate . . . . . . 0.0100
+
+evaluate: score thresh. 0.20, policy (16, 1), opt
+
+Good points . . . . 45989
+False negatives . . 41379
+   Rate . . . . . . 0.8998
+
+Bad points  . . . . 10650
+False positives . . 36
+   Rate . . . . . . 0.0034
+
+evaluate: score thresh. 0.20, policy (14, 1), poly = np.poly1d([0.00475, -0.05601, 0.24476, -0.48517, 0.42717, -0.11684, 0.01073])
+
+Good points . . . . 45989
+False negatives . . 34936
+   Rate . . . . . . 0.7597
+
+Bad points  . . . . 10650
+False positives . . 83
+   Rate . . . . . . 0.0078
+
+evaluate: score thresh. 0.20, policy (14, 1), const = lambda(x) : 0.0300
+
+Good points . . . . 45989
+False negatives . . 13795
+   Rate . . . . . . 0.3000
+
+Bad points  . . . . 10650
+False positives . . 315
+   Rate . . . . . . 0.0296
+
+evaluate: score thresh. 0.20, policy (14, 1), opt
+
+Good points . . . . 45989
+False negatives . . 41101
+   Rate . . . . . . 0.8937
+
+Bad points  . . . . 10650
+False positives . . 58
+   Rate . . . . . . 0.0054
+
+evaluate: score thresh. 0.20, policy (10, 1), hyper = lambda(x) : (-0.0725 / (x + 0.7790)) + 0.1235
+
+Good points . . . . 45989
+False negatives . . 12741
+   Rate . . . . . . 0.2770
+
+Bad points  . . . . 10650
+False positives . . 368
+   Rate . . . . . . 0.0346
+
+evaluate: score thresh. 0.20, policy (10, 1), poly = np.poly1d([0.0023, -0.02907, 0.13947, -0.31092, 0.30525, -0.06687, 0.04754])
+
+Good points . . . . 45989
+False negatives . . 7881
+   Rate . . . . . . 0.1714
+
+Bad points  . . . . 10650
+False positives . . 403
+   Rate . . . . . . 0.0378
+
+evaluate: score thresh. 0.20, policy (10, 1), const = lambda(x) : 0.1050
+
+Good points . . . . 45989
+False negatives . . 3305
+   Rate . . . . . . 0.0719
+
+Bad points  . . . . 10650
+False positives . . 473
+   Rate . . . . . . 0.0444
+
+evaluate: score thresh. 0.20, policy (10, 1), opt
+
+Good points . . . . 45989
+False negatives . . 35928
+   Rate . . . . . . 0.7812
+
+Bad points  . . . . 10650
+False positives . . 244
+   Rate . . . . . . 0.0229
+
+evaluate: score thresh. 0.20, policy (5, 1), hyper = lambda(x) : (-0.1203 / (x + 0.8986)) + 0.2086
+
+Good points . . . . 45989
+False negatives . . 4539
+   Rate . . . . . . 0.0987
+
+Bad points  . . . . 10650
+False positives . . 470
+   Rate . . . . . . 0.0441
+
+evaluate: score thresh. 0.20, policy (5, 1), poly = np.poly1d([0.00162, -0.02291, 0.1252, -0.32689, 0.38984, -0.12373, 0.10421])
+
+Good points . . . . 45989
+False negatives . . 3143
+   Rate . . . . . . 0.0683
+
+Bad points  . . . . 10650
+False positives . . 487
+   Rate . . . . . . 0.0457
+
+evaluate: score thresh. 0.20, policy (5, 1), const = lambda(x) : 0.1050
+
+Good points . . . . 45989
+False negatives . . 3305
+   Rate . . . . . . 0.0719
+
+Bad points  . . . . 10650
+False positives . . 473
+   Rate . . . . . . 0.0444
+
+evaluate: score thresh. 0.20, policy (5, 1), opt
+
+Good points . . . . 45989
+False negatives . . 3434
+   Rate . . . . . . 0.0747
+
+Bad points  . . . . 10650
+False positives . . 470
+   Rate . . . . . . 0.0441
+
+evaluate: score thresh. 0.20, policy (18, 1), poly = np.poly1d([0.00133, -0.01645, 0.075, -0.15353, 0.14023, -0.04827, 0.00848])
+
+Good points . . . . 45989
+False negatives . . 37711
+   Rate . . . . . . 0.8200
+
+Bad points  . . . . 10650
+False positives . . 41
+   Rate . . . . . . 0.0038
+
+evaluate: score thresh. 0.20, policy (18, 1), const = lambda(x) : 0.0050
+
+Good points . . . . 45989
+False negatives . . 41379
+   Rate . . . . . . 0.8998
+
+Bad points  . . . . 10650
+False positives . . 32
+   Rate . . . . . . 0.0030
+
+evaluate: score thresh. 0.20, policy (18, 1), opt
+
+Good points . . . . 45989
+False negatives . . 41379
+   Rate . . . . . . 0.8998
+
+Bad points  . . . . 10650
+False positives . . 32
+   Rate . . . . . . 0.0030
+
+evaluate: finished in 1327.29 seconds.
