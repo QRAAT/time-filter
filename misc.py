@@ -46,9 +46,10 @@ try:
 
   # Data rate w.r.t variaiton
 
-  variation_step = 0.04
+  variation_step = 0.1
   X = np.arange(0, 4, variation_step)
   Y = []
+  Y_noise = []
   
   cur.execute('''SELECT timestamp, pulse_interval, pulse_variation, duration
                    FROM estinterval
@@ -61,22 +62,33 @@ try:
   
   for variation in X:
     total = 0
+    total_noise = 0
+    theoretical_total = 0
     num_windows = 0
     for i in range(len(intervals)-1):
       if variation <= intervals[i][2] and intervals[i][2] < variation + variation_step:
-        cur.execute('''SELECT count(*)
-                         FROM est
+        cur.execute('''SELECT id FROM est
                         WHERE deploymentID = %s 
                           AND timestamp >= %s
                           AND timestamp < %s''', (
                 dep_id, intervals[i][0], intervals[i+1][0]))
-        (count,) = cur.fetchone()
-        theoretical_count = intervals[i][3] / intervals[i][1]
-        total += count / theoretical_count
+        est_ids = map(lambda(row) : row[0], cur.fetchall())
+        theoretical_count = intervals[i][3] / (intervals[i][1] * 5)
+        theoretical_total += theoretical_count
+        total += len(est_ids)
+        total_noise += len(filter(lambda(id) : good.get(id) != True, est_ids))
         num_windows += 1
-    Y.append(total if total == 0 else total / num_windows)
+    Y.append(0 if num_windows == 0 else total / (num_windows * theoretical_count))
+    Y_noise.append(0 if num_windows == 0 else total_noise / (num_windows *theoretical_count))
+  
+  Y = np.array(Y)
+  Y_noise = np.array(Y_noise)
 
   pp.plot(X, Y)
+  pp.plot(X, Y_noise, 'r')
+  pp.plot(X, Y_noise, 'r')
+  pp.plot(X, Y - Y_noise, 'g')
+  pp.legend(["Data", "Noise"])
   pp.title("Data rate quantized by variation")
   pp.xlabel("Variation")
   pp.ylabel("Number of pulses / number of possible pulses")
