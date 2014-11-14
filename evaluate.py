@@ -8,6 +8,7 @@ from optparse import OptionParser
 import numpy as np
 import pickle
 
+variation_step = 0.025
 dep_id  = 105
 t_start = 1410721127
 t_end   = 1410807696
@@ -16,7 +17,7 @@ exp = pickle.load(open('exp'))
 
 def _opt(x, opt, const):
    Y = opt
-   i = int(x / 0.04)
+   i = int(x / variation_step)
    if i < len(Y): 
      return Y[i]
    else: 

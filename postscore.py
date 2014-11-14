@@ -26,7 +26,9 @@ dep_id  = 105
 t_start = 1410721127
 t_end   = 1410807696
 
-EST_SCORE_THRESHOLD = float(sys.argv[1]) # float(os.environ["RMG_POS_EST_THRESHOLD"]) 
+basename = sys.argv[1]
+
+EST_SCORE_THRESHOLD = float(sys.argv[2]) # float(os.environ["RMG_POS_EST_THRESHOLD"]) 
                                          # greater than
 
 
@@ -35,7 +37,7 @@ try:
   print >>sys.stderr, "score_error: start time:", time.asctime(time.localtime(start))
 
   print "score_error: loading file ... "
-  (X, Y, prescores) = pickle.load(open('result'))
+  (X, Y, prescores) = pickle.load(open(basename))
 
   for EST_SCORE_THRESHOLD in map(lambda (x) : float(x), sys.argv[1:]):
     pos = []; neg = []; 
@@ -65,7 +67,7 @@ try:
         neg[-1].append(float(false_neg) / good_count)
         
     pickle.dump((X, Y, np.array(pos), np.array(neg)), 
-                   open('result%0.2f' % EST_SCORE_THRESHOLD, 'w')) # Dump result
+                   open('%s%0.2f' % (basename, EST_SCORE_THRESHOLD), 'w')) # Dump result
   
 
 except mdb.Error, e:

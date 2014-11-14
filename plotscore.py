@@ -8,31 +8,34 @@ from scipy.optimize import curve_fit
 import os, sys, time
 import pickle
 
+score_error_step = 0.005
+variation_step = 0.025
 
 exp = {}
 
+basename = sys.argv[1]
 #policies = [(20, 1), (18, 1), (16, 1), (14, 1), (12, 1), (10,1), (8,1), (5,1), (3,1), (2,1)]
-policies = [(10,1), (8,1), (5,1), (3,1), (2,1), (1,1), (1,2)]
+policies = [(2,1), (1,1)]
 
-for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
+for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[2:]):
 
   exp[EST_SCORE_THRESHOLD] = {}
 
   for (Cp, Cn) in policies:
     
-    if (Cp < 15 and EST_SCORE_THRESHOLD == 0.3): 
-      exp[EST_SCORE_THRESHOLD][(Cp, Cn)] = []
-      continue
+    #if (Cp < 15 and EST_SCORE_THRESHOLD == 0.3): 
+    #  exp[EST_SCORE_THRESHOLD][(Cp, Cn)] = []
+    #  continue
     
     curves = []
 
     print "Running %0.2f, (%d, %d)" % (EST_SCORE_THRESHOLD, Cp, Cn)
-    (X, Y, pos, neg) = pickle.load(open('result%0.2f' % EST_SCORE_THRESHOLD))
-    extent = [0.0, 4.0, 
+    (X, Y, pos, neg) = pickle.load(open('%s%0.2f' % (basename, EST_SCORE_THRESHOLD)))
+    extent = [0.0, 1.0, 
               0.0, 0.2]
     
     ### Trade-off policy ###
-    tradeoff = abs((Cp * pos) + (Cn * neg)) # TODO
+    tradeoff = abs((Cp * pos) - (Cn * neg)) # TODO
 
     opt = []
     opt_total_cost = 0
@@ -62,8 +65,8 @@ for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
       print "f(x) =", string
       total_cost = 0
       for x in X:
-        i = int(x / 0.04)
-        j = int(f(x, *popt) / 0.005) 
+        i = int(x / variation_step)
+        j = int(f(x, *popt) / score_error_step) 
         if j < len(Y): total_cost += tradeoff[-j,i]
       print "   cost = %0.4f" % total_cost
       curves.append((string, total_cost, "hyper"))
@@ -78,8 +81,8 @@ for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[1:]):
     print "p(x) =", string
     total_cost = 0
     for x in X:
-      i = int(x / 0.04)
-      j = int(p(x) / 0.005) 
+      i = int(x / variation_step)
+      j = int(p(x) / score_error_step) 
       total_cost += tradeoff[-j,i]
     print "   cost = %0.4f" % total_cost
     curves.append((string, total_cost, "poly"))

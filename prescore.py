@@ -25,6 +25,8 @@ dep_id  = 105
 t_start = 1410721127
 t_end   = 1410807696
 
+basename = sys.argv[1]
+
 try: 
   start = time.time()
   print >>sys.stderr, "score_error: start time:", time.asctime(time.localtime(start))
@@ -53,9 +55,9 @@ try:
   # variation and the y-axis is pulse error. 
   
   score_error_step = 0.005
-  variation_step = 0.04
+  variation_step = 0.025
   Y = np.arange(0, 0.2, score_error_step)
-  X = np.arange(0, 4, variation_step)
+  X = np.arange(0, 1, variation_step)
   prescores = [ [ [] for j in Y ] for i in X ] 
 
   y = len(Y)
@@ -85,7 +87,7 @@ try:
 
       x += 1
 
-  pickle.dump((X, Y, prescores), open('result', 'w')) # Dump result
+  pickle.dump((X, Y, prescores), open(basename, 'w')) # Dump result
   
 
 except mdb.Error, e:
