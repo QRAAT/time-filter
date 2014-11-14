@@ -50,6 +50,9 @@ try:
       good_count = bad_count = 0
       for x in range(len(X)):
         for (good, rel_score) in prescores[x][y]:
+          if rel_score < 0: 
+            continue # Don't consider points that didn't pass lower filters.
+          
           if good and rel_score > EST_SCORE_THRESHOLD:        pass # Ok
           elif not good and rel_score <= EST_SCORE_THRESHOLD: pass # Ok
           elif not good and rel_score > EST_SCORE_THRESHOLD:  false_pos += 1 # False positive

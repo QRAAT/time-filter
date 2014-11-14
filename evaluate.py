@@ -69,9 +69,8 @@ try:
         false_pos = false_neg = 0
         good_count = bad_count = 0
         for (id, rel_score) in cur.fetchall():
-          if good.get(id) == None: 
-            #print 'Uh oh!', id
-            continue
+          if good.get(id) == None or rel_score < 0:  
+            continue # Skip points that didn't pass lower filters.
         
           if good[id] and rel_score > score_thresh:        pass # Ok
           elif not good[id] and rel_score <= score_thresh: pass # Ok
