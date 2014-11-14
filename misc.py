@@ -46,39 +46,42 @@ try:
 
   # Data rate w.r.t variaiton
 
-  #  variation_step = 0.04
-  #  X = np.arange(0, 4, variation_step)
-  #  Y = []
-  #  
-  #  cur.execute('''SELECT timestamp, pulse_interval, pulse_variation
-  #                   FROM estinterval
-  #                  WHERE deploymentID = %s 
-  #                    AND timestamp >= %s
-  #                    AND timestamp <= %s
-  #                  ORDER BY timestamp''', (dep_id, t_start, t_end))
-  #
-  #  intervals = list(cur.fetchall())
-  #  
-  #  for variation in X:
-  #    total = 0
-  #    for i in range(len(intervals)-1):
-  #      if variation <= intervals[i][2] and intervals[i][2] < variation + variation_step:
-  #        cur.execute('''SELECT count(*)
-  #                         FROM est
-  #                        WHERE deploymentID = %s 
-  #                          AND timestamp >= %s
-  #                          AND timestamp < %s''', (
-  #                dep_id, intervals[i][0], intervals[i+1][0]))
-  #        (count,) = cur.fetchone()
-  #        total += count
-  #    Y.append(total)
-  #
-  #  pp.plot(X, Y)
-  #  pp.title("Data rate quantized by variation")
-  #  pp.xlabel("Variation")
-  #  pp.ylabel("Number of pulses")
-  #  pp.savefig('data_rate.png')
-  #  pp.clf()
+  variation_step = 0.04
+  X = np.arange(0, 4, variation_step)
+  Y = []
+  
+  cur.execute('''SELECT timestamp, pulse_interval, pulse_variation, duration
+                   FROM estinterval
+                  WHERE deploymentID = %s 
+                    AND timestamp >= %s
+                    AND timestamp <= %s
+                  ORDER BY timestamp''', (dep_id, t_start, t_end))
+
+  intervals = list(cur.fetchall())
+  
+  for variation in X:
+    total = 0
+    num_windows = 0
+    for i in range(len(intervals)-1):
+      if variation <= intervals[i][2] and intervals[i][2] < variation + variation_step:
+        cur.execute('''SELECT count(*)
+                         FROM est
+                        WHERE deploymentID = %s 
+                          AND timestamp >= %s
+                          AND timestamp < %s''', (
+                dep_id, intervals[i][0], intervals[i+1][0]))
+        (count,) = cur.fetchone()
+        theoretical_count = intervals[i][3] / intervals[i][1]
+        total += count / theoretical_count
+        num_windows += 1
+    Y.append(total if total == 0 else total / num_windows)
+
+  pp.plot(X, Y)
+  pp.title("Data rate quantized by variation")
+  pp.xlabel("Variation")
+  pp.ylabel("Number of pulses / number of possible pulses")
+  pp.savefig('data_rate.png')
+  pp.clf()
 
 
 except mdb.Error, e:
