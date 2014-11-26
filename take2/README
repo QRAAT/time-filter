@@ -1,3 +1,25 @@
+For various PULSE_ERROR functions, compute the variance on the resulting 
+positions. Before computing the variance, we do iterative outlier eliminationg
+to eliminate the skewing affect of biased (unbounded) position estimates, that 
+is, maximum likelihood positions over unbounded search spaces resulting from 
+missing data from a particular site. These data pertain to deploymentID=105 on 
+7/8/14. 
+  
+
+  Results 
+
+dep_id   filter      Variance   Total points
+10001    none        280.2716   3066 
+10004    const_high  289.7315   3079
+10000    hyper       320.3995   2874
+10002    const_low   388.5648   2138
+10003    noband      427.8007   2777
+
+
+  Files
+
+variance.py - Calculate the variance of each set of deployments. 
+
 est.txt.gz - Pulses for deploymentID=105 on 8/7/14. 
 
 pos.txt.gz - Positions for various time filter configurations, separated into 
