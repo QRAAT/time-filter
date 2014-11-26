@@ -35,25 +35,27 @@ def set_tracks(db_con, dep_id, pos_ids, T):
 
 # main  
 
-dep_id=10004
+dep_ids= [10000, 10001, 10002, 10003, 10004]
 db_con = qraat.srv.util.get_db('writer')
-(P, T, pos_ids) = get_positions(db_con, dep_id)
 
-# Iterated outlier elimination
-ct = 0
-while ct < 15:
-  mean = np.mean(P)
-  std = np.std(P)
-  print "%-3d" % (ct+1), "mean:", mean, "std: %2.4f" % std, "total:", len(P)
-  mask = np.abs(P - mean) <= 2 * std
-  P = P[mask] 
-  T = T[mask]
-  pos_ids = pos_ids[mask]
-  ct += 1
+for dep_id in dep_ids:
+  (P, T, pos_ids) = get_positions(db_con, dep_id)
 
-print "Variance: %.4f" % np.var(P)
+  # Iterated outlier elimination
+  ct = 0
+  while ct < 15:
+    mean = np.mean(P)
+    std = np.std(P)
+    print "%-3d" % (ct+1), "mean:", mean, "std: %2.4f" % std, "total:", len(P)
+    mask = np.abs(P - mean) <= 2 * std
+    P = P[mask] 
+    T = T[mask]
+    pos_ids = pos_ids[mask]
+    ct += 1
 
-# Display remaining positions as tracks in GUI. 
-set_tracks(db_con, dep_id, pos_ids, T) 
+  print "dep_id %d Variance: %.4f\n" % (dep_id, np.var(P))
+
+  # Display remaining positions as tracks in GUI. 
+  set_tracks(db_con, dep_id, pos_ids, T) 
 
 

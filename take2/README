@@ -9,11 +9,11 @@ missing data from a particular site. These data pertain to deploymentID=105 on
   Results 
 
 dep_id   filter      Variance   Total points
-10001    none        280.2716   3066 
-10004    const_high  289.7315   3079
-10000    hyper       320.3995   2874
-10002    const_low   388.5648   2138
-10003    noband      427.8007   2777
+10001    none        274.8263   3059 
+10004    const_high  287.9653   3075
+10000    hyper       299.0566   2832
+10002    const_low   408.0498   2252
+10003    noband      421.9759   2779
 
 
   Files
