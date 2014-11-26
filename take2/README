@@ -1,5 +1,5 @@
 For various PULSE_ERROR functions, we compute the variance on the resulting 
-positions. Before computing the variance, we do iterative outlyer eliminationg
+positions. Before computing the variance, we do iterative outlier eliminationg
 to eliminate the skewing affect of biased (unbounded) position estimates, that 
 is, maximum likelihood positions over unbounded search spaces resulting from 
 missing data from a particular site. These data pertain to deploymentID=105 on 
@@ -31,7 +31,7 @@ aggressive time filter policies (on top of the bandwidth filter).
 aggressive filter. However, these results suggest that the precision of our 
 estimates (here measured heuristically as variance) decreases sharply as 
 we filter more aggressively. Intuitvely, we hope (and would expect) the 
-variance to decrease as we filter more aggressively. However, The outlyer 
+variance to decrease as we filter more aggressively. However, The outlier 
 elimination mechanism used here doesn't remove all biased positions; in 
 particular, those close to the arithmetic mean. Therefore, the variance trend 
 we observe might be correlated with the higher incidence rate of biased points 
@@ -54,7 +54,7 @@ corresponding to different PULSE_ERROR settings. They are set up as a project
 for the QRAAT web UI with deployments corresponding to sets of positions. 
 
  variance.py - Compute variance. This will also populate the track table with 
-               positions that passed outlyer elimination. 
+               positions that passed outlier elimination. 
 
  est.txt.gz - Pulses for deploymentID=105 on 8/7/14. 
 

@@ -41,7 +41,7 @@ db_con = qraat.srv.util.get_db('writer')
 for dep_id in dep_ids:
   (P, T, pos_ids) = get_positions(db_con, dep_id)
 
-  # Iterated outlier elimination
+  # Iterated outlyer elimination
   ct = 0
   while ct < 15:
     mean = np.mean(P)
