@@ -68,7 +68,7 @@ try:
     # Run signal filter.
     qraat.srv.signal.SCORE_ERROR = lambda(x) : score_error
     print >>sys.stderr, "score_error = %.3f" % qraat.srv.signal.SCORE_ERROR(0)
-    (total, _) = qraat.srv.signal.Filter(db_con, dep_id, t_start, t_end)
+    (total, _) = qraat.srv.signal.Filter(db_con, dep_id, t_start, t_end, param_filter=False)
 
     # Count the number of false positives and false negatives in each variation range. 
     x = 0

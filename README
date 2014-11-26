@@ -1,41 +1,22 @@
---- Results -------------------------------------------------------------------
+Time filter experiments. 
 
-analyssis.txt -- Choice of PULSE_ERROR trade-off for the signal filter
-                 algorithm in the QRAAT Python module. 
+take1/ - 
 
-1/, 2/ -- Illustrations related to analysis. 
+Modeling pulse error as a function of variation in the pulse interval. An 
+analysis of one day's worth of data from a fixed transmitter. Since the data
+rate (data_rate.png) is not representative of variations higher than 1.0, the 
+results here are inconclusive. See take3/ for plans for continued work in this 
+direction. 
 
+  Results:
 
---- Data ----------------------------------------------------------------------
-
-est.txt.gz -- Raw data imported into databse to start tests.
-
-partition.csv -- Partitioned good / bad points. Serial ID's are consisstent
-                 with those in est.txt.gz. (Everything in staging/ put into
-                 one file.) 
-
-staging/siteN.csv       -- Partitioned points per site.
-staging/site3-rough.csv -- Partition for site 3 before fitting noisy parts 
-                           to curve. 
-good_points_siteN.png   -- Plot of good vs bad points.
+    SCORE_INTERVAL = 3 minutes
+    SCORE_NEIGHBORHOOD = 20 seconds
+    SCORE_ERROR = lambda(x) : (-0.6324 / (x + 7.7640)) + 0.1255 seconds
+    SCORE_THRESHOLD = 0.20 (lower bound on relative score for pos. est.) 
 
 
---- Scripts -------------------------------------------------------------------
+take2/ - 
 
-a.py -- Generate rough partition -> rough.png, siteN.csv
-b.py -- Plot siteN.csv -> good_points_siteN.png
-c.py -- Compile siteN.csv's into one CSV -> partition.csv
-
-prescore.py -- Run pulse filter for various fixed pulse errors quantized by 
-               variation. Store the score for each pulse and whether or not 
-               it's good or bad. (Input is partition.csv.) --> `result`
-
-postscore.py -- False positive/negative counts per variation and fixed score 
-                error. Reads `result`. --> `resultX1`, `resultX2`, ... 
-                `resultXn`, where X1, X2, ... Xn are the fixed score errors. 
-
-plotscore.py -- Plot false positves/negatives. Reads `resultXi`. 
-                 --> `false_{positives,negatives}_Xi.png`, `tradeoff_Xi.png`.
-
-evaluate.py -- Evaluate the performance of various (score_threshold, 
-               score_error) pairs. 
+Qualitatively evaluate the results of take1/. Does the time filter yield 
+performance gains over the band filter alone? 

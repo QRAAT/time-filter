@@ -39,7 +39,7 @@ try:
   print "score_error: loading file ... "
   (X, Y, prescores) = pickle.load(open(basename))
 
-  for EST_SCORE_THRESHOLD in map(lambda (x) : float(x), sys.argv[1:]):
+  for EST_SCORE_THRESHOLD in map(lambda (x) : float(x), sys.argv[2:]):
     pos = []; neg = []; 
     print "score_error: counting false positives / negatives (%0.2f) ... " % EST_SCORE_THRESHOLD
     

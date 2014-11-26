@@ -35,7 +35,7 @@ for EST_SCORE_THRESHOLD in map(lambda(x) : float(x), sys.argv[2:]):
               0.0, 0.2]
     
     ### Trade-off policy ###
-    tradeoff = abs((Cp * pos) - (Cn * neg)) # TODO
+    tradeoff = abs((Cp * pos) + (Cn * neg)) # TODO
 
     opt = []
     opt_total_cost = 0
