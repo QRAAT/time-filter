@@ -20,3 +20,12 @@ take2/ -
 
 Qualitatively evaluate the results of take1/. Does the time filter yield 
 performance gains over the band filter alone? 
+
+
+take3/ [planned] - 
+
+Grab a week's worth of data for a fixed transmitter. (Say, deploymentID=102 
+for 19/11/14 - 26/11/14.) If the data rate sufficiently resembles pulses for
+various pulse variation quantizations, then segment the points into good and
+bad as in take1/. Then we'll partition a testing and training set and do it 
+up right. (Look into employing Dwork's diff. privacy technique here.) 

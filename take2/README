@@ -1,0 +1,7 @@
+est.txt.gz - Pulses for deploymentID=105 on 8/7/14. 
+
+pos.txt.gz - Positions for various time filter configurations, separated into 
+             deployments 10000 - 10004. 
+
+meta.sql - Project metadata for dpeloyments 10000 - 10004. 
+
