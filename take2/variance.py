@@ -1,5 +1,5 @@
 # Compute the variance of position blobs corresponding to fixed transmitters. 
-# Do iterative outlier elimination to remove biased positions. NOTE this 
+# Do iterative outlyer elimination to remove biased positions. NOTE this 
 # script doesn't take time range into account. 
 
 import qraat, qraat.srv

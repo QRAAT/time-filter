@@ -1,5 +1,5 @@
-For various PULSE_ERROR functions, compute the variance on the resulting 
-positions. Before computing the variance, we do iterative outlier eliminationg
+For various PULSE_ERROR functions, we compute the variance on the resulting 
+positions. Before computing the variance, we do iterative outlyer eliminationg
 to eliminate the skewing affect of biased (unbounded) position estimates, that 
 is, maximum likelihood positions over unbounded search spaces resulting from 
 missing data from a particular site. These data pertain to deploymentID=105 on 
@@ -9,21 +9,58 @@ missing data from a particular site. These data pertain to deploymentID=105 on
   Results 
 
 dep_id   filter      Variance   Total points
-10001    none        274.8263   3059 
+10003    none        421.9759   2779
+10001    band        274.8263   3059 
 10004    const_high  287.9653   3075
 10000    hyper       299.0566   2832
 10002    const_low   408.0498   2252
-10003    noband      421.9759   2779
+
+  
+  Analysis
+
+We know already that when the time filter removes good pulses, this may
+result in a biased search space (by, for example, eliminating bearing from a 
+particular site). But the hope of filtering pulses is to increase the precision 
+of estimated positions by eliminating noise. This experiment is intended to 
+quantify this trade-off space in order to establish the best filtering policy. 
+'none' means no filtering at all, 'band' means just filtering by bandwidth, 
+and 'const_high', 'hyper', and 'const_low' represent progressively more 
+aggressive time filter policies (on top of the bandwidth filter). 
+
+    We know that we can reduce the false positive rate by applying a more 
+aggressive filter. However, these results suggest that the precision of our 
+estimates (here measured heuristically as variance) decreases sharply as 
+we filter more aggressively. Intuitvely, we hope (and would expect) the 
+variance to decrease as we filter more aggressively. However, The outlyer 
+elimination mechanism used here doesn't remove all biased positions; in 
+particular, those close to the arithmetic mean. Therefore, the variance trend 
+we observe might be correlated with the higher incidence rate of biased points 
+resulting from aggressive filtering. 
+
+    The next step is to to remove these biased points and calculate the 
+variance on the result. I believe we can write a filter that distinguished
+biased from unbiased positions by characterizing the search space over which
+they are maximized. It may then be the case that aggressive filtering does 
+indeed improve precision. However, it might be the case that the time filter
+offers only a marginal improvement, and that the band filter will suffice. We 
+will need to make a trade off between precision and the rate at which we data
+is eliminated. 
 
 
   Files
 
-variance.py - Calculate the variance of each set of deployments. 
+This directory contains pulse data for which we've compute sets of positions
+corresponding to different PULSE_ERROR settings. They are set up as a project
+for the QRAAT web UI with deployments corresponding to sets of positions. 
 
-est.txt.gz - Pulses for deploymentID=105 on 8/7/14. 
+ variance.py - Compute variance. This will also populate the track table with 
+               positions that passed outlyer elimination. 
 
-pos.txt.gz - Positions for various time filter configurations, separated into 
-             deployments 10000 - 10004. 
+ est.txt.gz - Pulses for deploymentID=105 on 8/7/14. 
 
-meta.sql - Project metadata for dpeloyments 10000 - 10004. 
+ pos.txt.gz - Positions for various time filter configurations, separated into 
+              deployments 10000 - 10004. 
+
+ meta.sql - Project metadata for dpeloyments 10000 - 10004. 
+
 
